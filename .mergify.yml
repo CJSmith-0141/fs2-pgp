@@ -8,13 +8,10 @@
 pull_request_rules:
 - name: merge scala-steward's PRs
   conditions:
-  - author=dwolla-oss-scala-steward[bot]
-  - or:
-    - body~=labels:.*early-semver-patch
-    - body~=labels:.*early-semver-minor
+  - author=scala-steward
+  - body~=labels:.*early-semver-patch
   - status-success=Build and Test (ubuntu-latest, 3, temurin@17)
   - status-success=Build and Test (ubuntu-latest, 2.13, temurin@17)
-  - status-success=Build and Test (ubuntu-latest, 2.12, temurin@17)
   actions:
     merge: {}
 - name: Label core PRs
@@ -24,22 +21,6 @@ pull_request_rules:
     label:
       add:
       - core
-      remove: []
-- name: Label input PRs
-  conditions:
-  - files~=^scalafix/input/
-  actions:
-    label:
-      add:
-      - input
-      remove: []
-- name: Label output PRs
-  conditions:
-  - files~=^scalafix/output/
-  actions:
-    label:
-      add:
-      - output
       remove: []
 - name: Label rules PRs
   conditions:
@@ -59,7 +40,7 @@ pull_request_rules:
       remove: []
 - name: Label tests PRs
   conditions:
-  - files~=^/
+  - files~=^tests/
   actions:
     label:
       add:

@@ -4,6 +4,7 @@ import org.typelevel.sbt.TypelevelKernelPlugin.autoImport.*
 import org.typelevel.sbt.TypelevelSettingsPlugin
 import sbt.*
 import sbt.Keys.*
+import org.typelevel.sbt.NoPublishPlugin
 
 class ArtifactVersions(val latest: ModuleID, compatibleVersions: List[String]) {
   val history: Set[ModuleID] = compatibleVersions.map(latest.withRevision).toSet
@@ -41,7 +42,7 @@ object BouncyCastlePlugin extends AutoPlugin {
     libraryDependencies ++= {
       if (tlIsScala3.value) Seq.empty
       else Seq(
-        compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.3" cross CrossVersion.full),
         compilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
       )
     },
@@ -80,14 +81,14 @@ object BouncyCastlePlugin extends AutoPlugin {
         sourceDirectory := (ThisBuild / baseDirectory).value / "core" / "src",
         libraryDependencies ++= {
           Seq(
-            "org.typelevel" %% "cats-core" % "2.10.0",
-            "org.typelevel" %% "cats-effect" % "3.5.3",
-            "co.fs2" %% "fs2-core" % "3.9.4",
-            "co.fs2" %% "fs2-io" % "3.9.4",
+            "org.typelevel" %% "cats-core" % "2.12.0",
+            "org.typelevel" %% "cats-effect" % "3.5.4",
+            "co.fs2" %% "fs2-core" % "3.10.2",
+            "co.fs2" %% "fs2-io" % "3.10.2",
             "io.monix" %% "newtypes-core" % "0.2.3",
-            "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0",
-            "org.typelevel" %% "log4cats-core" % "2.6.0",
-            "eu.timepit" %% "refined" % "0.11.1",
+            "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0",
+            "org.typelevel" %% "log4cats-core" % "2.7.0",
+            "eu.timepit" %% "refined" % "0.11.2",
             bouncyCastle,
           )
         },
@@ -118,8 +119,8 @@ object BouncyCastlePlugin extends AutoPlugin {
         sourceDirectory := (ThisBuild / baseDirectory).value / "testkit" / "src",
         libraryDependencies ++= {
           Seq(
-            "org.scalacheck" %% "scalacheck" % "1.17.0",
-            "eu.timepit" %% "refined-scalacheck" % "0.11.1",
+            "org.scalacheck" %% "scalacheck" % "1.18.0",
+            "eu.timepit" %% "refined-scalacheck" % "0.11.2",
             "io.chrisdavenport" %% "cats-scalacheck" % "0.3.2",
           )
         },
@@ -130,7 +131,7 @@ object BouncyCastlePlugin extends AutoPlugin {
       )
       .dependsOn(core)
       .settings(commonSettings)
-      .enablePlugins(TypelevelSettingsPlugin)
+      .enablePlugins(TypelevelSettingsPlugin, NoPublishPlugin)
 
     val tests = project
       .in(adjustedFile("tests"))
@@ -140,8 +141,8 @@ object BouncyCastlePlugin extends AutoPlugin {
         sourceDirectory := (ThisBuild / baseDirectory).value / "tests" / "src",
         libraryDependencies ++= {
           Seq(
-            "org.typelevel" %% "log4cats-noop" % "2.6.0" % Test,
-            "org.typelevel" %% "log4cats-slf4j" % "2.6.0" % Test,
+            "org.typelevel" %% "log4cats-noop" % "2.7.0" % Test,
+            "org.typelevel" %% "log4cats-slf4j" % "2.7.0" % Test,
             "ch.qos.logback" % "logback-classic" % "1.4.7" % Test,
             "org.scalameta" %% "munit" % "0.7.29" % Test,
             "org.typelevel" %% "scalacheck-effect" % "1.0.4" % Test,
