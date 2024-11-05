@@ -1,12 +1,12 @@
 lazy val V = new {
-  val SCALA_2_12 = "2.12.18"
-  val SCALA_2_13 = "2.13.14"
-  val SCALA_3 = "3.3.3"
+  val SCALA_2_12 = "2.12.20"
+  val SCALA_2_13 = "2.13.15"
+  val SCALA_3 = "3.3.4"
   val Scalas = Seq(SCALA_3, SCALA_2_13)
   val ScalafixScalaVersions = Scalas.filterNot(_.startsWith("3"))
 }
 
-ThisBuild / scalaVersion := "3.3.3"
+ThisBuild / scalaVersion := "3.3.4"
 ThisBuild / crossScalaVersions := V.Scalas
 ThisBuild / organization := "net.tazato"
 ThisBuild / homepage := Option(url("https://github.com/Dwolla/fs2-pgp"))

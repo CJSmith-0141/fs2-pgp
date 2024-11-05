@@ -62,11 +62,11 @@ jobs:
 
       - name: Make target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
-        run: mkdir -p core/target core/.bcpg-1.77/target scalafix/rules/target project/target
+        run: mkdir -p core/target core/.bcpg-1.77/target scalafix/rules/target core/.bcpg-1.78.1/target project/target
 
       - name: Compress target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
-        run: tar cf targets.tar core/target core/.bcpg-1.77/target scalafix/rules/target project/target
+        run: tar cf targets.tar core/target core/.bcpg-1.77/target scalafix/rules/target core/.bcpg-1.78.1/target project/target
 
       - name: Upload target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
@@ -185,7 +185,7 @@ jobs:
       - name: Submit Dependencies
         uses: scalacenter/sbt-dependency-submission@v2
         with:
-          modules-ignore: pgp-testkit_3 pgp-testkit_2.13 pgp-testkit-bcpg1.77_3 pgp-testkit-bcpg1.77_2.13
+          modules-ignore: pgp-testkit_3 pgp-testkit_2.13 pgp-testkit-bcpg1.78.1_3 pgp-testkit-bcpg1.78.1_2.13 pgp-testkit-bcpg1.77_3 pgp-testkit-bcpg1.77_2.13
           configs-ignore: test scala-tool scala-doc-tool test-internal
 
   validate-steward:

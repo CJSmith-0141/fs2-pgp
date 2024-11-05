@@ -24,8 +24,9 @@ object BouncyCastlePlugin extends AutoPlugin {
   // This plugin will automatically release a new suffixed artifact that can be used by users with bincompat issues.
   // Don't forget to regenerate the GitHub Actions workflow by running the `githubWorkflowGenerate` sbt task.
   private val bcpg = ArtifactVersions(
-    "org.bouncycastle" % "bcpg-jdk18on" % "1.78.1",
+    "org.bouncycastle" % "bcpg-jdk18on" % "1.79",
     List(
+      "1.78.1",
       "1.77",
     )
   )
@@ -74,9 +75,9 @@ object BouncyCastlePlugin extends AutoPlugin {
         libraryDependencies ++= {
           Seq(
             "org.typelevel" %% "cats-core" % "2.12.0",
-            "org.typelevel" %% "cats-effect" % "3.5.4",
-            "co.fs2" %% "fs2-core" % "3.10.2",
-            "co.fs2" %% "fs2-io" % "3.10.2",
+            "org.typelevel" %% "cats-effect" % "3.5.5",
+            "co.fs2" %% "fs2-core" % "3.11.0",
+            "co.fs2" %% "fs2-io" % "3.11.0",
             "io.monix" %% "newtypes-core" % "0.2.3",
             "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0",
             "org.typelevel" %% "log4cats-core" % "2.7.0",
