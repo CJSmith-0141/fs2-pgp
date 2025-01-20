@@ -24,11 +24,23 @@ object BouncyCastlePlugin extends AutoPlugin {
   // This plugin will automatically release a new suffixed artifact that can be used by users with bincompat issues.
   // Don't forget to regenerate the GitHub Actions workflow by running the `githubWorkflowGenerate` sbt task.
   private val bcpg = ArtifactVersions(
-    "org.bouncycastle" % "bcpg-jdk18on" % "1.79",
+    "org.bouncycastle" % "bcpg-jdk18on" % "1.80",
     List(
+      "1.79",
       "1.78.1",
       "1.77",
     )
+  )
+
+  // bcutil is needed explicitly starting in 1.80 for testing
+  // Tests don't get published so w/e
+  private val bcutil = ArtifactVersions(
+    "org.bouncycastle" % "bcutil-jdk18on" % "1.80" % Test,
+    List( 
+      "1.79",
+      "1.78.1",
+      "1.77",
+    ) 
   )
 
   private val commonSettings = Seq(
@@ -53,13 +65,13 @@ object BouncyCastlePlugin extends AutoPlugin {
     },
   )
 
-  private def buildProjects(bouncyCastle: ModuleID, isLatest: Boolean): (Project, Project, Project) = {
+  private def buildProjects(bouncyCastlePg: ModuleID, bouncyCastleUtil: ModuleID, isLatest: Boolean): (Project, Project, Project) = {
     def appendSuffixIfNotLatest(separator: String)
                                (s: String): String =
-      if (isLatest) s else s + separator + bouncyCastle.revision
+      if (isLatest) s else s + separator + bouncyCastlePg.revision
 
     def adjustedFile(s: String): File =
-      if (isLatest) file(s) else file(s) / s".bcpg-${bouncyCastle.revision}"
+      if (isLatest) file(s) else file(s) / s".bcpg-${bouncyCastlePg.revision}"
 
     def projectId(s: String): String =
       appendSuffixIfNotLatest("-bcpg")(s).replace('.', '_')
@@ -75,14 +87,14 @@ object BouncyCastlePlugin extends AutoPlugin {
         libraryDependencies ++= {
           Seq(
             "org.typelevel" %% "cats-core" % "2.12.0",
-            "org.typelevel" %% "cats-effect" % "3.5.5",
+            "org.typelevel" %% "cats-effect" % "3.5.7",
             "co.fs2" %% "fs2-core" % "3.11.0",
             "co.fs2" %% "fs2-io" % "3.11.0",
             "io.monix" %% "newtypes-core" % "0.2.3",
             "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0",
             "org.typelevel" %% "log4cats-core" % "2.7.0",
-            "eu.timepit" %% "refined" % "0.11.2",
-            bouncyCastle,
+            "eu.timepit" %% "refined" % "0.11.3",
+            bouncyCastlePg,
           )
         },
         unusedCompileDependenciesFilter -= moduleFilter("org.scala-lang.modules", "scala-collection-compat"),
@@ -143,6 +155,7 @@ object BouncyCastlePlugin extends AutoPlugin {
             "org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % Test,
             "dev.holt" %% "java-time-literals" % "1.1.1" % Test,
             "com.eed3si9n.expecty" %% "expecty" % "0.16.0" % Test,
+            bouncyCastleUtil
           )
         },
         publishArtifact := false,
@@ -155,10 +168,10 @@ object BouncyCastlePlugin extends AutoPlugin {
     (core, testkit, tests)
   }
 
-  private val (core, testkit, tests) = buildProjects(bcpg.latest, isLatest = true)
+  private val (core, testkit, tests) = buildProjects(bcpg.latest, bcutil.latest, isLatest = true)
 
-  private val oldVersionProjects: List[Project] = bcpg.versions.flatMap { v =>
-    val (c, tk, t) = buildProjects(bcpg.latest.withRevision(v.toString), isLatest = false)
+  private val oldVersionProjects: List[Project] = bcpg.versions.zip(bcutil.versions).flatMap { case (pgv, utilv) =>
+    val (c, tk, t) = buildProjects(bcpg.latest.withRevision(pgv.toString), bcutil.latest.withRevision(utilv.toString), isLatest = false)
 
     List(c, tk, t)
   }

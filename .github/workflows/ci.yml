@@ -24,23 +24,22 @@ concurrency:
 
 jobs:
   build:
-    name: Build and Test
+    name: Test
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         scala: [3, 2.13]
         java: [temurin@17]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
-      - name: Install sbt
-        if: contains(runner.os, 'macos')
-        run: brew install sbt
-
       - name: Checkout current branch (full)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Setup Java (temurin@17)
         id: setup-java-temurin-17
@@ -62,11 +61,11 @@ jobs:
 
       - name: Make target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
-        run: mkdir -p core/target core/.bcpg-1.77/target scalafix/rules/target core/.bcpg-1.78.1/target project/target
+        run: mkdir -p core/.bcpg-1.79/target core/target core/.bcpg-1.77/target scalafix/rules/target core/.bcpg-1.78.1/target project/target
 
       - name: Compress target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
-        run: tar cf targets.tar core/target core/.bcpg-1.77/target scalafix/rules/target core/.bcpg-1.78.1/target project/target
+        run: tar cf targets.tar core/.bcpg-1.79/target core/target core/.bcpg-1.77/target scalafix/rules/target core/.bcpg-1.78.1/target project/target
 
       - name: Upload target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
@@ -81,18 +80,17 @@ jobs:
     if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         java: [temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Install sbt
-        if: contains(runner.os, 'macos')
-        run: brew install sbt
-
       - name: Checkout current branch (full)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Setup Java (temurin@17)
         id: setup-java-temurin-17
@@ -153,21 +151,20 @@ jobs:
 
   dependency-submission:
     name: Submit Dependencies
-    if: github.event_name != 'pull_request'
+    if: github.event.repository.fork == false && github.event_name != 'pull_request'
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         java: [temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Install sbt
-        if: contains(runner.os, 'macos')
-        run: brew install sbt
-
       - name: Checkout current branch (full)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Setup Java (temurin@17)
         id: setup-java-temurin-17
@@ -185,14 +182,14 @@ jobs:
       - name: Submit Dependencies
         uses: scalacenter/sbt-dependency-submission@v2
         with:
-          modules-ignore: pgp-testkit_3 pgp-testkit_2.13 pgp-testkit-bcpg1.78.1_3 pgp-testkit-bcpg1.78.1_2.13 pgp-testkit-bcpg1.77_3 pgp-testkit-bcpg1.77_2.13
+          modules-ignore: pgp-testkit_3 pgp-testkit_2.13 pgp-testkit-bcpg1.78.1_3 pgp-testkit-bcpg1.78.1_2.13 pgp-testkit-bcpg1.79_3 pgp-testkit-bcpg1.79_2.13 pgp-testkit-bcpg1.77_3 pgp-testkit-bcpg1.77_2.13
           configs-ignore: test scala-tool scala-doc-tool test-internal
 
   validate-steward:
     name: Validate Steward Config
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         java: [temurin@11]
     runs-on: ${{ matrix.os }}
     steps:
