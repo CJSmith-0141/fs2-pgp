@@ -257,7 +257,7 @@ object BouncyCastlePlugin extends AutoPlugin {
       ),
     ),
     startYear := Option(2020),
-    tlBaseVersion := "0.5",
+    tlBaseVersion := "0.7",
     tlCiReleaseBranches := Seq("main", "series/0.5"),
     mergifyRequiredJobs ++= Seq("validate-steward"),
     mergifyStewardConfig ~= { _.map {
