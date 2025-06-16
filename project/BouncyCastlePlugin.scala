@@ -245,7 +245,7 @@ object BouncyCastlePlugin extends AutoPlugin {
     githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc"))),
     githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17")),
 
-    organization := "com.dwolla",
+    organization := "net.tazato",
     homepage := Some(url("https://github.com/Dwolla/fs2-pgp")),
     licenses := Seq(License.MIT),
     developers := List(
