@@ -52,8 +52,7 @@ trait PgpArbitraries extends PgpArbitrariesPlatform {
           }
           now <- Clock[F].realTime.map(_.toMillis).map(new Date(_))
           pgpPair <- MonadThrow[F].catchNonFatal {
-            // TODO the versionless `JcaPGPKeyPair` constructor is deprecated in BC1.80+
-            new JcaPGPKeyPair(PublicKeyAlgorithmTags.RSA_GENERAL, pair, now)
+            new JcaPGPKeyPair(4, PublicKeyAlgorithmTags.RSA_GENERAL, pair, now)
           }
         } yield pgpPair
       }

@@ -82,8 +82,7 @@ object Decrypt {
               case pbe: PGPPublicKeyEncryptedData =>
                 // a key ID of 0L indicates a "hidden" recipient,
                 // and we can't use that key ID to lookup the key
-                // TODO `PGPPublicKeyEncryptedData#getKeyID` is deprecated in BC1.80+
-                val recipientKeyId = Option(pbe.getKeyID).filterNot(_ == 0)
+                val recipientKeyId = Option(pbe.getKeyIdentifier().getKeyId()).filterNot(_ == 0)
 
                 // if the recipient is identified, check if it exists in the key material we have
                 // if it does, or if the recipient is undefined, try to decrypt.
@@ -94,13 +93,11 @@ object Decrypt {
                     .recoverWith {
                       case ex: KeyRingMissingKeyException =>
                         Logger[F]
-                          // TODO `PGPPublicKeyEncryptedData#getKeyID` is deprecated in BC1.80+
-                          .trace(ex)(s"could not decrypt using key ${pbe.getKeyID}")
+                          .trace(ex)(s"could not decrypt using key ${pbe.getKeyIdentifier().getKeyId()}")
                           .as(None)
                       case ex: KeyMismatchException =>
                         Logger[F]
-                          // TODO `PGPPublicKeyEncryptedData#getKeyID` is deprecated in BC1.80+
-                          .trace(ex)(s"could not decrypt using key ${pbe.getKeyID}")
+                          .trace(ex)(s"could not decrypt using key ${pbe.getKeyIdentifier().getKeyId()}")
                           .as(None)
                     }
                 else
