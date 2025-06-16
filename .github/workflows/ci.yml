@@ -60,15 +60,15 @@ jobs:
       - run: sbt test mimaReportBinaryIssues doc
 
       - name: Make target directories
-        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
         run: mkdir -p core/target/bcpg-1.81-jvm-3 .pgp-testkit-latest/target/bcpg-1.81-jvm-2.13 testkit/target/bcpg-1.81-jvm-2.13 .fs2-pgp-latest/target/bcpg-1.81-jvm-3 testkit/target/bcpg-1.81-jvm-2.12 scalafix/rules/target/bcpg-1.81-jvm-2.12 .pgp-testkit-latest/target/bcpg-1.81-jvm-2.12 .pgp-testkit-latest/target/bcpg-1.81-jvm-3 .fs2-pgp-latest/target/bcpg-1.81-jvm-2.13 .fs2-pgp-latest/target/bcpg-1.81-jvm-2.12 core/target/bcpg-1.81-jvm-2.13 core/target/bcpg-1.81-jvm-2.12 testkit/target/bcpg-1.81-jvm-3 scalafix/rules/target/bcpg-1.81-jvm-2.13 project/target
 
       - name: Compress target directories
-        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
         run: tar cf targets.tar core/target/bcpg-1.81-jvm-3 .pgp-testkit-latest/target/bcpg-1.81-jvm-2.13 testkit/target/bcpg-1.81-jvm-2.13 .fs2-pgp-latest/target/bcpg-1.81-jvm-3 testkit/target/bcpg-1.81-jvm-2.12 scalafix/rules/target/bcpg-1.81-jvm-2.12 .pgp-testkit-latest/target/bcpg-1.81-jvm-2.12 .pgp-testkit-latest/target/bcpg-1.81-jvm-3 .fs2-pgp-latest/target/bcpg-1.81-jvm-2.13 .fs2-pgp-latest/target/bcpg-1.81-jvm-2.12 core/target/bcpg-1.81-jvm-2.13 core/target/bcpg-1.81-jvm-2.12 testkit/target/bcpg-1.81-jvm-3 scalafix/rules/target/bcpg-1.81-jvm-2.13 project/target
 
       - name: Upload target directories
-        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
         uses: actions/upload-artifact@v4
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.scala }}
@@ -77,7 +77,7 @@ jobs:
   publish:
     name: Publish Artifacts
     needs: [build]
-    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/series/0.5')
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
     strategy:
       matrix:
         os: [ubuntu-22.04]
